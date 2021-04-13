@@ -31,7 +31,7 @@ fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 
-fun Canvas.drawRightSquareArc(scale : Float, w : Float, h : Float, paint : Paint) {
+fun Canvas.drawRightSquareArc(i : Int, scale : Float, w : Float, h : Float, paint : Paint) {
     val size : Float = Math.min(w, h) / sizeFactor
     val sf : Float = scale.sinify()
     val sf3 : Float = sf.divideScale(2, parts)
@@ -47,7 +47,10 @@ fun Canvas.drawRightSquareArc(scale : Float, w : Float, h : Float, paint : Paint
         drawLine(0f, 0f, 2 * size * sfj, 0f, paint)
         restore()
     }
-    drawArc(RectF(-size, -size, size, size), -rot, rot * sf3, false, paint)
+    save()
+    translate(-size, size)
+    drawArc(RectF(-2 * size, -2 * size, 2 * size, 2 * size), -rot, rot * sf3, i % 2 == 0, paint)
+    restore()
     restore()
 }
 
@@ -56,8 +59,13 @@ fun Canvas.drawRSANode(i : Int, scale : Float, paint : Paint) {
     val h : Float = height.toFloat()
     paint.color = colors[i]
     paint.strokeCap = Paint.Cap.ROUND
-    paint.style = Paint.Style.STROKE
-    drawRightSquareArc(scale, w, h, paint)
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    if (i % 2 == 1) {
+        paint.style = Paint.Style.STROKE
+    } else {
+        paint.style = Paint.Style.FILL
+    }
+    drawRightSquareArc(i, scale, w, h, paint)
 }
 
 class RightSquareArcView(ctx : Context) : View(ctx) {
