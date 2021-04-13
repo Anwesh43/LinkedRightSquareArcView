@@ -211,4 +211,13 @@ class RightSquareArcView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : RightSquareArcView {
+            val view : RightSquareArcView = RightSquareArcView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
