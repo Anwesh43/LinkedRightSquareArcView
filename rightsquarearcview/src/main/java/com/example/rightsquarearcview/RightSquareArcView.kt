@@ -30,3 +30,32 @@ fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
+
+fun Canvas.drawRightSquareArc(scale : Float, w : Float, h : Float, paint : Paint) {
+    val size : Float = Math.min(w, h) / sizeFactor
+    val sf : Float = scale.sinify()
+    val sf3 : Float = sf.divideScale(2, parts)
+    val sf4 : Float = sf.divideScale(3, parts)
+    save()
+    translate(w / 2, h / 2)
+    rotate(rot * sf4)
+    for (j in 0..1) {
+        val sfj : Float = sf.divideScale(j, parts)
+        save()
+        rotate(90f * j)
+        translate(-size, -size)
+        drawLine(0f, 0f, 2 * size * sfj, 0f, paint)
+        restore()
+    }
+    drawArc(RectF(-size, -size, size, size), -rot, rot * sf3, false, paint)
+    restore()
+}
+
+fun Canvas.drawRSANode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    paint.color = colors[i]
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.style = Paint.Style.STROKE
+    drawRightSquareArc(scale, w, h, paint)
+}
