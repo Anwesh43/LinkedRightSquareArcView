@@ -1,0 +1,3 @@
+include ':rightsquarearcview'
+include ':app'
+rootProject.name = "LinkedRightSquareArcView"
